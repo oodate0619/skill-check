@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webキャリア適性チェック</title>
+  <style>
+    :root {
+      --primary-color: #1a2a6c;
+      --secondary-color: #b21f1f;
+      --accent-color: #fdbb2d;
+      --text-color: #333;
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+    }
+    body {
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: var(--card-bg);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    h1 {
+      font-size: 24px;
+      color: var(--primary-color);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.7;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background-color: #e0e0e0;
+      border-radius: 3px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    .question-container {
+      display: none;
+      animation: fadeIn 0.5s;
+    }
+    .question-container.active { display: block; }
+    .question-text {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    button.option-btn {
+      background: #fff;
+      border: 2px solid #e0e0e0;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+      color: #555;
+    }
+    button.option-btn:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      background: #f9f9ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .result-container { display: none; animation: slideUp 0.6s ease-out; }
+    .result-header {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .result-title {
+      font-size: 26px;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+    .result-visual {
+      background-color: #f0f4f8;
+      border-radius: 15px;
+      padding: 18px;
+      margin-bottom: 18px;
+      border: 1px dashed var(--primary-color);
+      text-align: left;
+    }
+    .result-visual-text {
+      font-weight: bold;
+      color: var(--primary-color);
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+    .result-desc {
+      font-size: 15px;
+      line-height: 1.85;
+      color: #444;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .highlight-box {
+      background: linear-gradient(135deg, #fffbf0 0%, #fff5e6 100%);
+      border-left: 5px solid var(--accent-color);
+      padding: 18px;
+      margin: 18px 0 20px;
+      text-align: left;
+      border-radius: 0 10px 10px 0;
+    }
+    .highlight-title {
+      font-weight: bold;
+      color: #d35400;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .mini-box {
+      background: #f7f8fb;
+      border: 1px solid #e6e8f0;
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 12px;
+    }
+    .mini-box strong { color: #111; }
+    .prompt {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background: #111;
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 10px 0 0;
+    }
+    .cta-btn {
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      padding: 16px 22px;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(26, 42, 108, 0.25);
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      width: 88%;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(26, 42, 108, 0.35);
+    }
+    .subBtn {
+      display: inline-block;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      padding: 12px 18px;
+      border-radius: 999px;
+      color: #333;
+      font-weight: 800;
+      margin-top: 12px;
+    }
+    .hidden { display: none; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
+  </style>
+</head>
+
+<body>
+<div class="container">
+  <!-- Intro -->
+  <div id="intro-screen">
+    <h1>Webキャリア適性チェック</h1>
+    <p class="subtitle">
+      「何から始めるのが合いそうか」を3つの質問で整理します。<br>
+      ※当てにいく診断ではなく、迷いを減らして動きやすくするためのチェックです。
+    </p>
+
+    <div style="margin: 26px 0 34px;">
+      <p style="font-size: 15px; color: #555; line-height:1.7; text-align:left;">
+        Webデザイン、動画編集、AI、発信…選択肢が多すぎて、正解探しで止まってしまう人が多いです。<br><br>
+        ここでは、あなたの<strong>ストレスの原因／理想の働き方／得意な傾向</strong>から、
+        「いまのあなたが進みやすい入口」を見つけます。
+      </p>
+    </div>
+
+    <button class="cta-btn" onclick="startQuiz()">チェックを始める</button>
+  </div>
+
+  <!-- Quiz -->
+  <div id="quiz-screen" class="hidden">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+    <div class="question-container active" id="q1">
+      <div class="question-text">Q1. 仕事で「一番しんどい」と感じるのはどれ？</div>
+      <div class="options">
+        <button class="option-btn" onclick="nextQuestion(1, 'A')">A. 時間や場所に縛られる（通勤・拘束・自由がない）</button>
+        <button class="option-btn" onclick="nextQuestion(1, 'B')">B. 意味があるのか分からない作業を続ける</button>
+        <button class="option-btn" onclick="nextQuestion(1, 'C')">C. 頑張っても収入が増えにくい（上限が見える）</button>
+      </div>
+    </div>
+
+    <div class="question-container" id="q2">
+      <div class="question-text">Q2. Webスキルで働けるなら、どんな感じが理想？</div>
+      <div class="options">
+        <button class="option-btn" onclick="nextQuestion(2, 'A')">A. 自分のペースでコツコツ積み上げたい</button>
+        <button class="option-btn" onclick="nextQuestion(2, 'B')">B. 伝え方で人の反応が変わる仕事がしたい</button>
+        <button class="option-btn" onclick="nextQuestion(2, 'C')">C. 数字を見て改善して、成果を積み上げたい</button>
+      </div>
+    </div>
+
+    <div class="question-container" id="q3">
+      <div class="question-text">Q3. 自分の「得意っぽい」に近いのは？</div>
+      <div class="options">
+        <button class="option-btn" onclick="nextQuestion(3, 'A')">A. 丁寧／ミスに気づく／やることを整理できる</button>
+        <button class="option-btn" onclick="nextQuestion(3, 'B')">B. 気持ちをくみ取る／言葉のニュアンスに敏感</button>
+        <button class="option-btn" onclick="nextQuestion(3, 'C')">C. 「なぜ？」を考える／効率化や改善が好き</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading-screen" class="hidden">
+    <h2 style="color:var(--primary-color); margin:10px 0 6px;">チェック中...</h2>
+    <p style="color:#666; margin:0;">回答をもとに、進みやすい入口を整理しています。</p>
+  </div>
+
+  <!-- Result -->
+  <div id="result-screen" class="hidden">
+    <div class="result-container" id="result-content"></div>
+  </div>
+</div>
+
+<script>
+  let scores = { A: 0, B: 0, C: 0 };
+
+  function startQuiz() {
+    document.getElementById('intro-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    updateProgress(1);
+  }
+
+  function nextQuestion(qNum, answer) {
+    scores[answer]++;
+
+    const currentQ = document.getElementById('q' + qNum);
+    currentQ.classList.remove('active');
+
+    if (qNum < 3) {
+      const nextQ = document.getElementById('q' + (qNum + 1));
+      nextQ.classList.add('active');
+      updateProgress(qNum + 1);
+    } else {
+      showResult();
+    }
+  }
+
+  function updateProgress(qNum) {
+    const percentage = ((qNum - 1) / 3) * 100;
+    document.getElementById('progress').style.width = percentage + '%';
+  }
+
+  function showResult() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('loading-screen').classList.remove('hidden');
+
+    setTimeout(() => {
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('result-screen').classList.remove('hidden');
+      document.querySelector('.result-container').style.display = 'block';
+
+      let type = 'B'; // default
+      if (scores.A > scores.B && scores.A > scores.C) type = 'A';
+      if (scores.C > scores.B && scores.C > scores.A) type = 'C';
+
+      renderResult(type);
+    }, 900);
+  }
+
+  function renderResult(type) {
+    const container = document.getElementById('result-content');
+    let title, visualText, description;
+
+    if (type === 'A') {
+      title = "【コツコツ積み上げタイプ】<br>記事づくり・運用サポート向き";
+      visualText = "💻 自分のペースで積み上げて、信頼が増えていく働き方";
+      description = `
+        あなたは、丁寧に積み上げる作業が得意なタイプです。<br>
+        この強みはWebの世界だと、かなり武器になります。<br><br>
+        ただし「作業だけ」の仕事を選ぶと、単価が上がりにくいので要注意。<br>
+        “何をどう伝えるか”まで扱えるようになると、一気に楽になります。
+      `;
+    } else if (type === 'B') {
+      title = "【共感・ことばタイプ】<br>SNS・発信サポート向き";
+      visualText = "📱 伝え方ひとつで、反応が変わる。感謝が増える働き方";
+      description = `
+        あなたは、人の気持ちをくみ取って言葉にするのが得意なタイプです。<br>
+        いまの時代、この「人っぽさ」は価値になりやすいです。<br><br>
+        ただ、思いつきの投稿だけだと続かないことも多いので、<br>
+        “型”を持って回せるようになると安定します。
+      `;
+    } else {
+      title = "【分析・改善タイプ】<br>広告・マーケ視点が伸びやすい";
+      visualText = "📈 数字を見て改善して、成果が積み上がる働き方";
+      description = `
+        あなたは、物事を整理して最短ルートを考えるのが得意なタイプです。<br>
+        このタイプは、改善が回り始めると一気に強くなります。<br><br>
+        ただし“テクニックだけ”に寄ると再現が難しいので、<br>
+        土台（考えを整理して伝える力）を先に作ると伸びが早いです。
+      `;
+    }
+
+    // ★ここが「AIでハードルが下がる」具体例
+    const aiExamplePrompt = `あなたは文章の編集者です。
+次の文章を「相手に伝わる順番」に整えてください。
+・結論を先に
+・むずかしい言葉は、ふつうの言葉に
+・300文字以内
+
+【元の文章】
+（ここに自分の言いたいことをそのまま貼る）`;
+
+    const nextStepUrl = "https://YOUR_NEXT_STEP_URL"; // ←差し替え
+    const lineUrl = "https://lin.ee/YOUR_LINE";       // ←差し替え
+
+    container.innerHTML = `
+      <div class="result-header">あなたの結果</div>
+      <div class="result-title">${title}</div>
+
+      <div class="result-visual">
+        <div class="result-visual-text">${visualText}</div>
+        <div style="color:#555; font-size:13px; line-height:1.7;">
+          ※この結果は「向いている入口」の目安です。ここから微調整すればOKです。
+        </div>
+      </div>
+
+      <div class="result-desc">${description}</div>
+
+      <div class="highlight-box">
+        <span class="highlight-title">ここで安心してほしいこと</span>
+        <p style="margin:0; font-size:14px; line-height:1.75;">
+          どのタイプでも、次に進むときに必要になるのが<br>
+          <strong>「考えを整理して、相手に伝わる形にする力」</strong>です。<br><br>
+          でも、最初から上手く書ける必要はありません。<br>
+          <strong>型があります</strong>し、いまは<strong>AIを使うと一気にハードルが下がります</strong>。
+        </p>
+
+        <div class="mini-box">
+          <strong>AIの使い方（これだけでOK）</strong><br>
+          <span style="font-size:13px; color:#555; line-height:1.7;">
+            「うまくまとめられない…」と思ったら、まずはAIに“整えて”と頼んでください。<br>
+            下の文章をそのままコピペして使えます。
+          </span>
+          <div class="prompt">${aiExamplePrompt.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
+          <div style="font-size:12px; color:#666; margin-top:8px; line-height:1.7;">
+            ※AIが出した文章を“たたき台”にして、少し言い回しを変えるだけで十分です。
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin: 10px 0 12px;">
+        <p style="font-weight:800; color:var(--primary-color); line-height:1.6; margin:0;">
+          あなたのタイプに合わせて、<br>「次にやること」を1枚にまとめました
+        </p>
+      </div>
+
+      <a href="${nextStepUrl}" class="cta-btn" target="_blank" rel="noopener">👉 次にやることを見る（無料）</a>
+
+      <div style="margin-top:14px;">
+        <a href="${lineUrl}" class="subBtn" target="_blank" rel="noopener">うまく言葉にできない場合は、LINEで相談する</a>
+        <p style="font-size:12px; color:#999; margin-top:10px; line-height:1.6; text-align:left;">
+          「書くのが苦手」「何から手を付けるべき？」みたいな状態でも大丈夫です。<br>
+          今の状況に合わせて、最初の一歩を一緒に整理します。
+        </p>
+      </div>
+    `;
+  }
+</script>
+</body>
+</html>
