@@ -3,417 +3,435 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Webキャリア適性チェック</title>
-  <style>
-    :root {
-      --primary-color: #1a2a6c;
-      --secondary-color: #b21f1f;
-      --accent-color: #fdbb2d;
-      --text-color: #333;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-    }
-    body {
-      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
-      background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-      color: var(--text-color);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .container {
-      width: 100%;
-      max-width: 600px;
-      background: var(--card-bg);
-      padding: 40px;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    h1 {
-      font-size: 24px;
-      color: var(--primary-color);
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-    .subtitle {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 30px;
-      line-height: 1.7;
-    }
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background-color: #e0e0e0;
-      border-radius: 3px;
-      margin-bottom: 30px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-      width: 0%;
-      transition: width 0.3s ease;
-    }
-    .question-container {
-      display: none;
-      animation: fadeIn 0.5s;
-    }
-    .question-container.active { display: block; }
-    .question-text {
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 25px;
-      line-height: 1.6;
-    }
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    button.option-btn {
-      background: #fff;
-      border: 2px solid #e0e0e0;
-      padding: 15px 20px;
-      border-radius: 12px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
-      position: relative;
-      overflow: hidden;
-      color: #555;
-    }
-    button.option-btn:hover {
-      border-color: var(--primary-color);
-      color: var(--primary-color);
-      background: #f9f9ff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    .result-container { display: none; animation: slideUp 0.6s ease-out; }
-    .result-header {
-      font-size: 12px;
-      color: #888;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .result-title {
-      font-size: 26px;
-      font-weight: 800;
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 16px;
-      line-height: 1.25;
-    }
-    .result-visual {
-      background-color: #f0f4f8;
-      border-radius: 15px;
-      padding: 18px;
-      margin-bottom: 18px;
-      border: 1px dashed var(--primary-color);
-      text-align: left;
-    }
-    .result-visual-text {
-      font-weight: bold;
-      color: var(--primary-color);
-      font-size: 16px;
-      margin-bottom: 6px;
-    }
-    .result-desc {
-      font-size: 15px;
-      line-height: 1.85;
-      color: #444;
-      margin-bottom: 18px;
-      text-align: left;
-    }
-    .highlight-box {
-      background: linear-gradient(135deg, #fffbf0 0%, #fff5e6 100%);
-      border-left: 5px solid var(--accent-color);
-      padding: 18px;
-      margin: 18px 0 20px;
-      text-align: left;
-      border-radius: 0 10px 10px 0;
-    }
-    .highlight-title {
-      font-weight: bold;
-      color: #d35400;
-      margin-bottom: 8px;
-      display: block;
-    }
-    .mini-box {
-      background: #f7f8fb;
-      border: 1px solid #e6e8f0;
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 12px;
-    }
-    .mini-box strong { color: #111; }
-    .prompt {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      background: #111;
-      color: #fff;
-      border-radius: 12px;
-      padding: 12px;
-      font-size: 12px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin: 10px 0 0;
-    }
-    .cta-btn {
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      border: none;
-      padding: 16px 22px;
-      border-radius: 999px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 10px 20px rgba(26, 42, 108, 0.25);
-      transition: all 0.3s;
-      text-decoration: none;
-      display: inline-block;
-      width: 88%;
-    }
-    .cta-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 30px rgba(26, 42, 108, 0.35);
-    }
-    .subBtn {
-      display: inline-block;
-      text-decoration: none;
-      border: 1px solid #ddd;
-      padding: 12px 18px;
-      border-radius: 999px;
-      color: #333;
-      font-weight: 800;
-      margin-top: 12px;
-    }
-    .hidden { display: none; }
+  <title>Webキャリア適性診断 | Webste</title>
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
+  <style>
+    :root{
+      --c-blue:#40C1E9;
+      --c-pink:#F17F9E;
+      --c-yellow:#F9CE23;
+
+      --text:#222;
+      --muted:#667085;
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --line:#e7ecf3;
+
+      --shadow:0 14px 40px rgba(16,24,40,.10);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:24px;
+      background:
+        radial-gradient(900px 400px at 20% 10%, rgba(64,193,233,.18), transparent 60%),
+        radial-gradient(900px 400px at 80% 20%, rgba(241,127,158,.14), transparent 60%),
+        radial-gradient(900px 400px at 50% 95%, rgba(249,206,35,.12), transparent 60%),
+        linear-gradient(135deg,#ffffff 0%, #f3f5f9 100%);
+      color:var(--text);
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    }
+
+    .container{
+      width:100%;
+      max-width:660px;
+      background:var(--card);
+      padding:34px 28px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      border:1px solid var(--line);
+      position:relative;
+      overflow:hidden;
+      text-align:center;
+    }
+
+    h1{
+      margin:0 0 8px;
+      font-size:24px;
+      letter-spacing:.2px;
+      line-height:1.35;
+    }
+    .subtitle{
+      margin:0 0 18px;
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.75;
+    }
+
+    .heroNote{
+      margin:18px 0 24px;
+      padding:14px 14px;
+      background:#f7fbff;
+      border:1px solid rgba(64,193,233,.35);
+      border-radius:14px;
+      color:#0f3b47;
+      font-size:14px;
+      line-height:1.75;
+      text-align:left;
+    }
+    .heroNote strong{color:#0b2a31}
+
+    .progress-bar{
+      width:100%;
+      height:7px;
+      background:#eef2f7;
+      border-radius:999px;
+      overflow:hidden;
+      margin:0 0 22px;
+      border:1px solid var(--line);
+    }
+    .progress-fill{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--c-blue),var(--c-pink));
+      transition:width .25s ease;
+    }
+
+    .question-container{display:none; animation:fadeIn .35s ease;}
+    .question-container.active{display:block;}
+
+    .question-text{
+      font-size:18px;
+      font-weight:700;
+      line-height:1.6;
+      margin:0 0 18px;
+      text-align:left;
+    }
+
+    .options{display:flex; flex-direction:column; gap:12px;}
+    button.option-btn{
+      width:100%;
+      border:1px solid var(--line);
+      background:#fff;
+      padding:14px 14px;
+      border-radius:14px;
+      font-size:15px;
+      cursor:pointer;
+      text-align:left;
+      line-height:1.55;
+      transition:all .18s ease;
+      color:#1f2937;
+    }
+    button.option-btn:hover{
+      border-color:rgba(64,193,233,.7);
+      box-shadow:0 8px 18px rgba(64,193,233,.12);
+      transform:translateY(-1px);
+    }
+
+    .cta-btn{
+      background:linear-gradient(90deg,var(--c-blue),var(--c-pink));
+      color:#fff;
+      border:none;
+      padding:16px 18px;
+      border-radius:999px;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 12px 26px rgba(64,193,233,.25);
+      transition:transform .18s ease, box-shadow .18s ease;
+      text-decoration:none;
+      display:inline-block;
+      width:min(420px, 92%);
+    }
+    .cta-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 16px 34px rgba(64,193,233,.32);
+    }
+
+    .hidden{display:none;}
+
+    /* Result */
+    .result-container{display:none; animation:slideUp .45s ease;}
+    .result-header{
+      font-size:12px;
+      letter-spacing:.18em;
+      color:var(--muted);
+      text-transform:uppercase;
+      margin:0 0 10px;
+    }
+    .result-title{
+      margin:0 0 14px;
+      font-size:26px;
+      line-height:1.25;
+      font-weight:900;
+      background:linear-gradient(90deg,var(--c-blue),var(--c-pink));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .result-visual{
+      border-radius:14px;
+      padding:14px;
+      margin:0 0 16px;
+      background:linear-gradient(135deg, rgba(64,193,233,.10), rgba(241,127,158,.08));
+      border:1px dashed rgba(64,193,233,.55);
+      text-align:left;
+    }
+    .result-visual-text{
+      font-weight:800;
+      color:#0b2a31;
+      font-size:15px;
+      line-height:1.6;
+    }
+    .result-desc{
+      text-align:left;
+      font-size:14px;
+      line-height:1.85;
+      color:#344054;
+      margin:0 0 18px;
+    }
+
+    .box{
+      text-align:left;
+      border-radius:14px;
+      padding:16px;
+      margin:0 0 12px;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .boxTitle{
+      display:block;
+      font-weight:900;
+      margin:0 0 8px;
+      color:#111827;
+    }
+
+    .boxStep{
+      background:linear-gradient(135deg, rgba(249,206,35,.18), rgba(249,206,35,.08));
+      border-color:rgba(249,206,35,.45);
+    }
+
+    .boxAI{
+      background:linear-gradient(135deg, rgba(64,193,233,.14), rgba(64,193,233,.06));
+      border-color:rgba(64,193,233,.45);
+    }
+
+    .micro{
+      margin:8px 0 0;
+      font-size:12px;
+      color:var(--muted);
+      line-height:1.65;
+      text-align:center;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(8px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+    @keyframes slideUp{
+      from{opacity:0; transform:translateY(18px)}
+      to{opacity:1; transform:translateY(0)}
+    }
   </style>
 </head>
 
 <body>
-<div class="container">
-  <!-- Intro -->
-  <div id="intro-screen">
-    <h1>Webキャリア適性チェック</h1>
-    <p class="subtitle">
-      「何から始めるのが合いそうか」を3つの質問で整理します。<br>
-      ※当てにいく診断ではなく、迷いを減らして動きやすくするためのチェックです。
-    </p>
+  <div class="container">
 
-    <div style="margin: 26px 0 34px;">
-      <p style="font-size: 15px; color: #555; line-height:1.7; text-align:left;">
-        Webデザイン、動画編集、AI、発信…選択肢が多すぎて、正解探しで止まってしまう人が多いです。<br><br>
-        ここでは、あなたの<strong>ストレスの原因／理想の働き方／得意な傾向</strong>から、
-        「いまのあなたが進みやすい入口」を見つけます。
+    <!-- Intro -->
+    <div id="intro-screen">
+      <h1>Webキャリア適性診断</h1>
+      <p class="subtitle">
+        あなたの「強み」をヒントに、<br>
+        今の条件でも進める “入口” を見つけます。
+      </p>
+
+      <div class="heroNote">
+        <strong>3問・約1分</strong>で終わります。<br>
+        「向いてる／向いてない」を決めるものではなく、<br>
+        <strong>何から始めると一番ラクか</strong>を整理するための診断です。
+      </div>
+
+      <button class="cta-btn" onclick="startQuiz()">診断を開始する</button>
+      <p class="micro">※途中でやめても大丈夫。まずは気軽にどうぞ。</p>
+    </div>
+
+    <!-- Quiz -->
+    <div id="quiz-screen" class="hidden">
+      <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+      <div class="question-container active" id="q1">
+        <div class="question-text">Q1. 仕事で「一番ストレス」なのはどれですか？</div>
+        <div class="options">
+          <button class="option-btn" onclick="nextQuestion(1,'A')">A. 時間や場所に縛られる（通勤・拘束など）</button>
+          <button class="option-btn" onclick="nextQuestion(1,'B')">B. 誰の役にも立っていない“作業感”が強い</button>
+          <button class="option-btn" onclick="nextQuestion(1,'C')">C. 頑張っても収入が上がらない“天井”がある</button>
+        </div>
+      </div>
+
+      <div class="question-container" id="q2">
+        <div class="question-text">Q2. Webスキルで自由に働けるなら、理想に近いのは？</div>
+        <div class="options">
+          <button class="option-btn" onclick="nextQuestion(2,'A')">A. 自分のペースでコツコツ積み上げたい</button>
+          <button class="option-btn" onclick="nextQuestion(2,'B')">B. 言葉で人の気持ちを動かして喜ばれたい</button>
+          <button class="option-btn" onclick="nextQuestion(2,'C')">C. 数字と戦略で“仕組み”を動かしたい</button>
+        </div>
+      </div>
+
+      <div class="question-container" id="q3">
+        <div class="question-text">Q3. 自分の「得意」に近いのはどれですか？</div>
+        <div class="options">
+          <button class="option-btn" onclick="nextQuestion(3,'A')">A. 丁寧・正確／細かいミスに気づく</button>
+          <button class="option-btn" onclick="nextQuestion(3,'B')">B. 共感力／言葉のニュアンスに敏感</button>
+          <button class="option-btn" onclick="nextQuestion(3,'C')">C. 「なぜ？」を考える／効率化が好き</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading-screen" class="hidden">
+      <h2 style="margin:0 0 10px; color:#0b2a31;">診断中…</h2>
+      <p style="margin:0; color:var(--muted); line-height:1.7;">
+        回答をもとに、あなたの“入口”を整理しています。
       </p>
     </div>
 
-    <button class="cta-btn" onclick="startQuiz()">チェックを始める</button>
-  </div>
-
-  <!-- Quiz -->
-  <div id="quiz-screen" class="hidden">
-    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-
-    <div class="question-container active" id="q1">
-      <div class="question-text">Q1. 仕事で「一番しんどい」と感じるのはどれ？</div>
-      <div class="options">
-        <button class="option-btn" onclick="nextQuestion(1, 'A')">A. 時間や場所に縛られる（通勤・拘束・自由がない）</button>
-        <button class="option-btn" onclick="nextQuestion(1, 'B')">B. 意味があるのか分からない作業を続ける</button>
-        <button class="option-btn" onclick="nextQuestion(1, 'C')">C. 頑張っても収入が増えにくい（上限が見える）</button>
-      </div>
-    </div>
-
-    <div class="question-container" id="q2">
-      <div class="question-text">Q2. Webスキルで働けるなら、どんな感じが理想？</div>
-      <div class="options">
-        <button class="option-btn" onclick="nextQuestion(2, 'A')">A. 自分のペースでコツコツ積み上げたい</button>
-        <button class="option-btn" onclick="nextQuestion(2, 'B')">B. 伝え方で人の反応が変わる仕事がしたい</button>
-        <button class="option-btn" onclick="nextQuestion(2, 'C')">C. 数字を見て改善して、成果を積み上げたい</button>
-      </div>
-    </div>
-
-    <div class="question-container" id="q3">
-      <div class="question-text">Q3. 自分の「得意っぽい」に近いのは？</div>
-      <div class="options">
-        <button class="option-btn" onclick="nextQuestion(3, 'A')">A. 丁寧／ミスに気づく／やることを整理できる</button>
-        <button class="option-btn" onclick="nextQuestion(3, 'B')">B. 気持ちをくみ取る／言葉のニュアンスに敏感</button>
-        <button class="option-btn" onclick="nextQuestion(3, 'C')">C. 「なぜ？」を考える／効率化や改善が好き</button>
-      </div>
+    <!-- Result -->
+    <div id="result-screen" class="hidden">
+      <div class="result-container" id="result-content"></div>
     </div>
   </div>
 
-  <!-- Loading -->
-  <div id="loading-screen" class="hidden">
-    <h2 style="color:var(--primary-color); margin:10px 0 6px;">チェック中...</h2>
-    <p style="color:#666; margin:0;">回答をもとに、進みやすい入口を整理しています。</p>
-  </div>
+  <script>
+    const LINE_URL = "https://liff.line.me/2002804372-2db8JlKM/landing?follow=%40901omzdl&lp=O9Jn52&liff_id=2002804372-2db8JlKM";
 
-  <!-- Result -->
-  <div id="result-screen" class="hidden">
-    <div class="result-container" id="result-content"></div>
-  </div>
-</div>
+    let scores = { A:0, B:0, C:0 };
 
-<script>
-  let scores = { A: 0, B: 0, C: 0 };
-
-  function startQuiz() {
-    document.getElementById('intro-screen').classList.add('hidden');
-    document.getElementById('quiz-screen').classList.remove('hidden');
-    updateProgress(1);
-  }
-
-  function nextQuestion(qNum, answer) {
-    scores[answer]++;
-
-    const currentQ = document.getElementById('q' + qNum);
-    currentQ.classList.remove('active');
-
-    if (qNum < 3) {
-      const nextQ = document.getElementById('q' + (qNum + 1));
-      nextQ.classList.add('active');
-      updateProgress(qNum + 1);
-    } else {
-      showResult();
-    }
-  }
-
-  function updateProgress(qNum) {
-    const percentage = ((qNum - 1) / 3) * 100;
-    document.getElementById('progress').style.width = percentage + '%';
-  }
-
-  function showResult() {
-    document.getElementById('quiz-screen').classList.add('hidden');
-    document.getElementById('loading-screen').classList.remove('hidden');
-
-    setTimeout(() => {
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('result-screen').classList.remove('hidden');
-      document.querySelector('.result-container').style.display = 'block';
-
-      let type = 'B'; // default
-      if (scores.A > scores.B && scores.A > scores.C) type = 'A';
-      if (scores.C > scores.B && scores.C > scores.A) type = 'C';
-
-      renderResult(type);
-    }, 900);
-  }
-
-  function renderResult(type) {
-    const container = document.getElementById('result-content');
-    let title, visualText, description;
-
-    if (type === 'A') {
-      title = "【コツコツ積み上げタイプ】<br>記事づくり・運用サポート向き";
-      visualText = "💻 自分のペースで積み上げて、信頼が増えていく働き方";
-      description = `
-        あなたは、丁寧に積み上げる作業が得意なタイプです。<br>
-        この強みはWebの世界だと、かなり武器になります。<br><br>
-        ただし「作業だけ」の仕事を選ぶと、単価が上がりにくいので要注意。<br>
-        “何をどう伝えるか”まで扱えるようになると、一気に楽になります。
-      `;
-    } else if (type === 'B') {
-      title = "【共感・ことばタイプ】<br>SNS・発信サポート向き";
-      visualText = "📱 伝え方ひとつで、反応が変わる。感謝が増える働き方";
-      description = `
-        あなたは、人の気持ちをくみ取って言葉にするのが得意なタイプです。<br>
-        いまの時代、この「人っぽさ」は価値になりやすいです。<br><br>
-        ただ、思いつきの投稿だけだと続かないことも多いので、<br>
-        “型”を持って回せるようになると安定します。
-      `;
-    } else {
-      title = "【分析・改善タイプ】<br>広告・マーケ視点が伸びやすい";
-      visualText = "📈 数字を見て改善して、成果が積み上がる働き方";
-      description = `
-        あなたは、物事を整理して最短ルートを考えるのが得意なタイプです。<br>
-        このタイプは、改善が回り始めると一気に強くなります。<br><br>
-        ただし“テクニックだけ”に寄ると再現が難しいので、<br>
-        土台（考えを整理して伝える力）を先に作ると伸びが早いです。
-      `;
+    function startQuiz(){
+      document.getElementById("intro-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+      updateProgress(1);
     }
 
-    // ★ここが「AIでハードルが下がる」具体例
-    const aiExamplePrompt = `あなたは文章の編集者です。
-次の文章を「相手に伝わる順番」に整えてください。
-・結論を先に
-・むずかしい言葉は、ふつうの言葉に
-・300文字以内
+    function nextQuestion(qNum, ans){
+      scores[ans]++;
 
-【元の文章】
-（ここに自分の言いたいことをそのまま貼る）`;
+      const current = document.getElementById("q"+qNum);
+      current.classList.remove("active");
 
-    const nextStepUrl = "https://YOUR_NEXT_STEP_URL"; // ←差し替え
-    const lineUrl = "https://lin.ee/YOUR_LINE";       // ←差し替え
+      if(qNum < 3){
+        const next = document.getElementById("q"+(qNum+1));
+        next.classList.add("active");
+        updateProgress(qNum+1);
+      }else{
+        showResult();
+      }
+    }
 
-    container.innerHTML = `
-      <div class="result-header">あなたの結果</div>
-      <div class="result-title">${title}</div>
+    function updateProgress(qNum){
+      const percent = ((qNum-1)/3)*100;
+      document.getElementById("progress").style.width = percent + "%";
+    }
 
-      <div class="result-visual">
-        <div class="result-visual-text">${visualText}</div>
-        <div style="color:#555; font-size:13px; line-height:1.7;">
-          ※この結果は「向いている入口」の目安です。ここから微調整すればOKです。
+    function showResult(){
+      document.getElementById("quiz-screen").classList.add("hidden");
+      document.getElementById("loading-screen").classList.remove("hidden");
+
+      setTimeout(()=>{
+        document.getElementById("loading-screen").classList.add("hidden");
+        document.getElementById("result-screen").classList.remove("hidden");
+        document.getElementById("result-content").style.display = "block";
+
+        let type = "B";
+        if(scores.A > scores.B && scores.A > scores.C) type = "A";
+        if(scores.C > scores.B && scores.C > scores.A) type = "C";
+
+        renderResult(type);
+      }, 900);
+    }
+
+    function renderResult(type){
+      const container = document.getElementById("result-content");
+
+      let title="", visualText="", description="";
+
+      if(type==="A"){
+        title = "【静かなる職人】<br>記事作成＆Webディレクター";
+        visualText = "💻 自分のペースで、コツコツ積み上げていけるタイプ";
+        description = `
+          あなたは「丁寧さ」と「継続力」が強みです。<br>
+          Web業界では、正確さと積み上げはそのまま武器になります。<br><br>
+          ただし、単なる軽作業に寄ると “低単価の沼” にハマりやすいので、<br>
+          <strong>価値が積み上がる仕事の入口</strong>から入るのがポイントです。
+        `;
+      }else if(type==="B"){
+        title = "【言葉のセンサー】<br>SNSライティング＆ファン化";
+        visualText = "📱 共感を言葉にできる。人に届く表現が得意なタイプ";
+        description = `
+          あなたは「相手の気持ちを拾う力」が強みです。<br>
+          AIが進むほど、この“人の温度感”は価値になりやすいです。<br><br>
+          ただ、勢いで日記っぽくなると伸びにくいので、<br>
+          <strong>型に沿って“届く形”に整える</strong>のがコツです。
+        `;
+      }else{
+        title = "【仕組みの設計者】<br>セールスライティング＆マーケ";
+        visualText = "📈 数字と戦略で、仕組みを動かすのが好きなタイプ";
+        description = `
+          あなたは「本質を掴んで最短で進めたい」タイプです。<br>
+          Web業界では、上流の設計に回れるほど単価も上がりやすいです。<br><br>
+          ただし小手先の知識を集めすぎると動けなくなるので、<br>
+          <strong>まずは小さく動いて“型”を作る</strong>のが近道です。
+        `;
+      }
+
+      const html = `
+        <div class="result-header">あなたの診断結果</div>
+        <h2 class="result-title">${title}</h2>
+
+        <div class="result-visual">
+          <div class="result-visual-text">${visualText}</div>
         </div>
-      </div>
 
-      <div class="result-desc">${description}</div>
+        <div class="result-desc">${description}</div>
 
-      <div class="highlight-box">
-        <span class="highlight-title">ここで安心してほしいこと</span>
-        <p style="margin:0; font-size:14px; line-height:1.75;">
-          どのタイプでも、次に進むときに必要になるのが<br>
-          <strong>「考えを整理して、相手に伝わる形にする力」</strong>です。<br><br>
-          でも、最初から上手く書ける必要はありません。<br>
-          <strong>型があります</strong>し、いまは<strong>AIを使うと一気にハードルが下がります</strong>。
-        </p>
+        <div class="box boxStep">
+          <span class="boxTitle">✅ 次にやること（ここだけでOK）</span>
+          <div style="font-size:14px; line-height:1.8; color:#344054;">
+            いきなり上手に書く必要はありません。<br>
+            まずは <strong>型</strong> に当てはめて、<strong>AIに整えてもらう</strong>ところからで十分です。<br><br>
 
-        <div class="mini-box">
-          <strong>AIの使い方（これだけでOK）</strong><br>
-          <span style="font-size:13px; color:#555; line-height:1.7;">
-            「うまくまとめられない…」と思ったら、まずはAIに“整えて”と頼んでください。<br>
-            下の文章をそのままコピペして使えます。
-          </span>
-          <div class="prompt">${aiExamplePrompt.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</div>
-          <div style="font-size:12px; color:#666; margin-top:8px; line-height:1.7;">
-            ※AIが出した文章を“たたき台”にして、少し言い回しを変えるだけで十分です。
+            <strong>STEP1（10分）</strong> 今の悩みを「箇条書きで3つ」<br>
+            <strong>STEP2（10分）</strong> AIに「結論→理由→例」の順に並べてもらう<br>
+            <strong>STEP3（10分）</strong> 最後に“自分の言葉”を一言だけ足す
           </div>
         </div>
-      </div>
 
-      <div style="text-align:center; margin: 10px 0 12px;">
-        <p style="font-weight:800; color:var(--primary-color); line-height:1.6; margin:0;">
-          あなたのタイプに合わせて、<br>「次にやること」を1枚にまとめました
+        <div class="box boxAI">
+          <span class="boxTitle">💡 1分で使える：AIに頼むテンプレ</span>
+          <div style="font-size:13px; line-height:1.8; color:#344054;">
+            あなたは文章の編集者です。<br>
+            次の文章を「相手に伝わる順番」に整えてください。<br>
+            ・結論を先に / むずかしい言葉は、ふつうの言葉に / 300文字以内<br><br>
+            <strong>【元の文章】</strong><br>
+            （ここに自分の言いたいことを、そのまま貼る）
+          </div>
+        </div>
+
+        <div style="margin:14px 0 12px; text-align:center;">
+          <div style="font-weight:800; color:#0b2a31; line-height:1.7;">
+            もし迷ったら、あなたの場合の「最初の一歩」だけ一緒に整理します
+          </div>
+          <div style="font-size:12px; color:var(--muted); margin-top:6px; line-height:1.6;">
+            ①今の状況 ②使える時間 ③目標（短文でOK）を送るだけで大丈夫です
+          </div>
+        </div>
+
+        <a href="${LINE_URL}" class="cta-btn" target="_blank" rel="noopener">
+          👉 LINEで「最初の一歩」を整理する
+        </a>
+
+        <p class="micro">
+          ※質問は3つだけ。短文・箇条書きでOKです。
         </p>
-      </div>
+      `;
 
-      <a href="${nextStepUrl}" class="cta-btn" target="_blank" rel="noopener">👉 次にやることを見る（無料）</a>
-
-      <div style="margin-top:14px;">
-        <a href="${lineUrl}" class="subBtn" target="_blank" rel="noopener">うまく言葉にできない場合は、LINEで相談する</a>
-        <p style="font-size:12px; color:#999; margin-top:10px; line-height:1.6; text-align:left;">
-          「書くのが苦手」「何から手を付けるべき？」みたいな状態でも大丈夫です。<br>
-          今の状況に合わせて、最初の一歩を一緒に整理します。
-        </p>
-      </div>
-    `;
-  }
-</script>
+      container.innerHTML = html;
+    }
+  </script>
 </body>
 </html>
